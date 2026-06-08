@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Mapa de Servicios</title>
+
+<link
+  href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+  rel="stylesheet"
+/>
+
+<style>
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#map {
+  width: 100vw;
+  height: 100vh;
+}
+
+.mapboxgl-popup-content {
+  font-family: Arial, sans-serif;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+h3 {
+  margin: 0 0 10px 0;
+}
+
+p {
+  margin: 5px 0;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="map"></div>
+
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+
+<script>
+
+mapboxgl.accessToken =
+"pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
+
+const map = new mapboxgl.Map({
+  container: "map",
+  style: "mapbox://styles/jdariovz/cmplmosub009r01snddodbh7z",
+  center: [-100.3161, 25.6866],
+  zoom: 5
+});
+
+map.on("load", () => {
+
+  map.addSource("simpatizantes", {
+    type: "geojson",
+    data: "https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
+  });
+
+  map.addLayer({
+    id: "pins",
+    type: "circle",
+    source: "simpatizantes",
+    paint: {
+      "circle-radius": 8,
+      "circle-color": "#00e5ff",
+      "circle-stroke-width": 2,
+      "circle-stroke-color": "#ffffff"
+    }
+  });
+
+  map.on("click", "pins", (e) => {
+
+    const props = e.features[0].properties;
+
+    new mapboxgl.Popup()
+      .setLngLat(e.lngLat)
+      .setHTML(`
+        <h3>${props.nombre}</h3>
+
+        <p>
+          <b>Servicio:</b><br>
+          ${props.servicio}
+        </p>
+
+        <p>
+          <b>Status:</b><br>
+          ${props.status}
+        </p>
+      `)
+      .addTo(map);
+
+  });
+
+});
+
+</script>
+
+</body>
+</html>
