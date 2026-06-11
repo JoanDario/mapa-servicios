@@ -7,173 +7,180 @@
 <title>Mapa de Servicios</title>
 
 <link
-  href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
-  rel="stylesheet"
+href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+rel="stylesheet"
 />
 
 <style>
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+
+html, body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
 }
 
-#map {
-  width: 100vw;
-  height: 100vh;
+#map{
+    width:100vw;
+    height:100vh;
 }
 
-.mapboxgl-popup-content {
-  font-family: Arial, sans-serif;
-  border-radius: 12px;
-  padding: 12px;
+.mapboxgl-popup-content{
+    font-family:Arial, sans-serif;
+    border-radius:12px;
+    padding:12px;
 }
 
-h3 {
-  margin: 0 0 10px 0;
-}
-
-p {
-  margin: 5px 0;
-}
-  #buscador{
-  position:absolute;
-  top:15px;
-  left:15px;
-  z-index:999;
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.2);
+#buscador{
+    position:absolute;
+    top:15px;
+    left:15px;
+    z-index:999;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
 
 #buscador input{
-  width:100px;
+    width:110px;
 }
+
 </style>
 
 </head>
 
 <body>
+
 <div id="buscador">
-  <input type="number" id="seccionInput" placeholder="Buscar sección">
-  <button onclick="buscarSeccion()">Ir</button>
+    <input type="number" id="seccionInput" placeholder="Buscar sección">
+    <button onclick="buscarSeccion()">Ir</button>
 </div>
 
-<div id="map"></div>
 <div id="map"></div>
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 
-  function buscarSeccion() {
-
-  const seccion = document
-    .getElementById("seccionInput")
-    .value
-    .trim();
-
-  if (!seccion) return;
-
-  const features = map.querySourceFeatures(
-    "secciones-local"
-  );
-
-  const encontrada = features.find(
-    f => String(f.properties.SECCION_2026) === seccion
-  );
-
-  if (!encontrada) {
-    alert("Sección no encontrada");
-    return;
-  }
-
-  map.setFilter(
-    "resaltado-seccion",
-    ["==", "SECCION_2026", encontrada.properties.SECCION_2026]
-  );
-
-  const bounds = new mapboxgl.LngLatBounds();
-
-  encontrada.geometry.coordinates[0].forEach(coord => {
-    bounds.extend(coord);
-  });
-
-  map.fitBounds(bounds, {
-    padding: 40
-  });
-}
-  
 <script>
 
 mapboxgl.accessToken =
 "pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
 
 const map = new mapboxgl.Map({
-  container: "map",
-  style: "mapbox://styles/jdariovz/cmplmosub009r01snddodbh7z",
-  center: [-100.3161, 25.6866],
-  zoom: 10.2
+    container: "map",
+    style: "mapbox://styles/jdariovz/cmplmosub009r01snddodbh7z",
+    center: [-100.3161, 25.6866],
+    zoom: 10.2
 });
 
-map.on("load", () => {
+function buscarSeccion(){
 
-  map.addSource("simpatizantes", {
-    type: "geojson",
-    data: "https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
-  });
+    const seccion = document
+        .getElementById("seccionInput")
+        .value
+        .trim();
 
-  map.addLayer({
-    id: "pins",
-    type: "circle",
-    source: "simpatizantes",
-    paint: {
-      "circle-radius": 8,
-      "circle-color": "#00e5ff",
-      "circle-stroke-width": 2,
-      "circle-stroke-color": "#ffffff"
+    if(!seccion) return;
+
+    const features = map.querySourceFeatures("secciones-local");
+
+    const encontrada = features.find(
+        f => String(f.properties.SECCION_2026) === seccion
+    );
+
+    if(!encontrada){
+        alert("Sección no encontrada");
+        return;
     }
-    
-  });
-  map.addSource("secciones-local", {
-  type: "geojson",
-  data: "./PRIORIDAD 2027.geojson"
-});
 
-map.addLayer({
-  id: "resaltado-seccion",
-  type: "line",
-  source: "secciones-local",
-  paint: {
-    "line-color": "#ffff00",
-    "line-width": 4
-  },
-  filter: ["==", "SECCION_2026", ""]
-});
+    map.setFilter(
+        "resaltado-seccion",
+        ["==","SECCION_2026",encontrada.properties.SECCION_2026]
+    );
 
-  map.on("click", "pins", (e) => {
+    const bounds = new mapboxgl.LngLatBounds();
 
-    const props = e.features[0].properties;
+    // Para Polygon y MultiPolygon
+    let coords;
 
-    new mapboxgl.Popup()
-      .setLngLat(e.lngLat)
-      .setHTML(`
-        <h3>${props.nombre}</h3>
+    if(encontrada.geometry.type === "Polygon"){
+        coords = encontrada.geometry.coordinates[0];
+    }
+    else{
+        coords = encontrada.geometry.coordinates[0][0];
+    }
 
-        <p>
-          <b>Servicio:</b><br>
-          ${props.servicio}
-        </p>
+    coords.forEach(coord=>{
+        bounds.extend(coord);
+    });
 
-        <p>
-          <b>Status:</b><br>
-          ${props.status}
-        </p>
-      `)
-      .addTo(map);
+    map.fitBounds(bounds,{
+        padding:40
+    });
 
-  });
+}
+
+map.on("load",()=>{
+
+    // Servicios
+    map.addSource("simpatizantes",{
+        type:"geojson",
+        data:"https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
+    });
+
+    map.addLayer({
+        id:"pins",
+        type:"circle",
+        source:"simpatizantes",
+        paint:{
+            "circle-radius":8,
+            "circle-color":"#00e5ff",
+            "circle-stroke-width":2,
+            "circle-stroke-color":"#ffffff"
+        }
+    });
+
+    // GeoJSON completo del estado
+    map.addSource("secciones-local",{
+        type:"geojson",
+        data:"https://raw.githubusercontent.com/JoanDario/mapa-servicios/main/PRIORIDAD%202027.geojson"
+    });
+
+    // Resaltado amarillo
+    map.addLayer({
+        id:"resaltado-seccion",
+        type:"line",
+        source:"secciones-local",
+        paint:{
+            "line-color":"#ffff00",
+            "line-width":5
+        },
+        filter:["==","SECCION_2026",""]
+    });
+
+    // Popups
+    map.on("click","pins",(e)=>{
+
+        const props = e.features[0].properties;
+
+        new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(`
+            <h3>${props.nombre}</h3>
+
+            <p>
+            <b>Servicio:</b><br>
+            ${props.servicio}
+            </p>
+
+            <p>
+            <b>Status:</b><br>
+            ${props.status}
+            </p>
+        `)
+        .addTo(map);
+
+    });
 
 });
 
