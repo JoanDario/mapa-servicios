@@ -366,28 +366,29 @@ fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQb
 
     data.features.forEach(item => {
 
-        html += `
-        <div
-style="
-margin-bottom:15px;
-padding-bottom:10px;
-border-bottom:1px solid #ddd;
-cursor:pointer;
-"
-onclick="irActividad(
-${item.geometry.coordinates[0]},
-${item.geometry.coordinates[1]}
-)"
->
+    html += `
+    <div
+    style="
+    margin-bottom:15px;
+    padding-bottom:10px;
+    border-bottom:1px solid #ddd;
+    cursor:pointer;
+    "
+    onclick="irActividad(
+    ${item.geometry.coordinates[0]},
+    ${item.geometry.coordinates[1]}
+    )"
+    >
 
-            <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
-            ${item.properties.actividad}<br>
-            <small>${item.properties.ubicacion}</small>
-        </div>
-        `;
+    <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
 
-    });
+    ${item.properties.actividad}<br>
 
+    <small>${item.properties.ubicacion}</small>
+
+    </div>
+    `;
+});
     document.getElementById("lista-actividades").innerHTML = html;
 
 });
