@@ -211,6 +211,78 @@ map.addSource("equipo", {
         .addTo(map);
 
     });
+    map.on("click", "pins-senador", (e) => {
+
+  const props = e.features[0].properties;
+
+  new mapboxgl.Popup()
+    .setLngLat(e.lngLat)
+    .setHTML(`
+      <h3>Actividad del Senador</h3>
+
+      <p>
+        <b>Fecha:</b><br>
+        ${props.fecha}
+      </p>
+
+      <p>
+        <b>Actividad:</b><br>
+        ${props.actividad}
+      </p>
+
+      <p>
+        <b>Ubicación:</b><br>
+        ${props.ubicacion}
+      </p>
+
+      <p>
+        <b>Aforo:</b><br>
+        ${props.aforo}
+      </p>
+
+      <p>
+        <b>Comentario:</b><br>
+        ${props.comentario}
+      </p>
+    `)
+    .addTo(map);
+
+});
+    map.on("click", "pins-equipo", (e) => {
+
+  const props = e.features[0].properties;
+
+  new mapboxgl.Popup()
+    .setLngLat(e.lngLat)
+    .setHTML(`
+      <h3>Actividad del Equipo</h3>
+
+      <p>
+        <b>Fecha:</b><br>
+        ${props.fecha}
+      </p>
+
+      <p>
+        <b>Actividad:</b><br>
+        ${props.actividad}
+      </p>
+
+      <p>
+        <b>Ubicación:</b><br>
+        ${props.ubicacion}
+      </p>
+
+      <p>
+        <b>Aforo:</b><br>
+        ${props.aforo}
+      </p>
+
+      <p>
+        <b>Comentario:</b><br>
+        ${props.comentario}
+      </p>
+    `)
+    .addTo(map);
 
 });
 
