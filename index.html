@@ -358,7 +358,27 @@ map.addSource("equipo", {
     .addTo(map);
 
 });
+fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec")
+.then(response => response.json())
+.then(data => {
 
+    let html = "";
+
+    data.features.forEach(item => {
+
+        html += `
+        <div style="margin-bottom:15px;">
+            <b>${item.properties.fecha}</b><br>
+            ${item.properties.actividad}<br>
+            <small>${item.properties.ubicacion}</small>
+        </div>
+        `;
+
+    });
+
+    document.getElementById("lista-actividades").innerHTML = html;
+
+});
     });   // ← cierre del map.on("load")
 </script>
 
