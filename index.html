@@ -60,7 +60,24 @@ html, body{
 </head>
 
 <body>
+<div id="capas">
 
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins')">
+Servicios
+</label><br>
+
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins-senador')">
+Senador
+</label><br>
+
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins-equipo')">
+Equipo
+</label>
+
+</div>
 <div id="buscador">
     <input type="number" id="seccionInput" placeholder="Buscar sección">
     <button onclick="buscarSeccion()">Ir</button>
@@ -126,24 +143,7 @@ function buscarSeccion(){
     map.fitBounds(bounds,{
         padding:40
     });
-<div id="capas">
 
-<label>
-<input type="checkbox" checked onchange="toggleLayer('pins')">
-Servicios
-</label><br>
-
-<label>
-<input type="checkbox" checked onchange="toggleLayer('pins-senador')">
-Senador
-</label><br>
-
-<label>
-<input type="checkbox" checked onchange="toggleLayer('pins-equipo')">
-Equipo
-</label>
-
-</div>
 }
 function toggleLayer(id){
 
