@@ -55,6 +55,19 @@ html, body{
     border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
+    #panel-lista{
+    position:absolute;
+    top:220px;
+    left:15px;
+    width:250px;
+    max-height:400px;
+    overflow-y:auto;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+    z-index:999;
+}
 </style>
 
 </head>
@@ -76,6 +89,17 @@ Senador
 <input type="checkbox" checked onchange="toggleLayer('pins-equipo')">
 Equipo
 </label>
+
+</div>
+    <div id="panel-lista">
+
+<h3>Actividades</h3>
+
+<div id="lista-actividades">
+
+Sin elementos
+
+</div>
 
 </div>
 <div id="buscador">
