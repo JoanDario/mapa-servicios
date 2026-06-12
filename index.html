@@ -367,8 +367,13 @@ fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQb
     data.features.forEach(item => {
 
         html += `
-        <div style="margin-bottom:15px;">
-            <b>${item.properties.fecha}</b><br>
+        <div style="
+margin-bottom:15px;
+cursor:pointer;
+padding-bottom:10px;
+border-bottom:1px solid #ddd;
+">
+            <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
             ${item.properties.actividad}<br>
             <small>${item.properties.ubicacion}</small>
         </div>
