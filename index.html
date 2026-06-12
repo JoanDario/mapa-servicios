@@ -76,11 +76,20 @@ html, body{
 <div id="capas">
 
 <label>
-<input id="checkServicios" type="checkbox" checked onchange="toggleLayer('pins')">
+<input id="checkServicios"
+type="checkbox"
+checked
+onchange="toggleLayer('pins'); actualizarLista();">
 
-<input id="checkSenador" type="checkbox" checked onchange="toggleLayer('pins-senador')">
+<input id="checkSenador"
+type="checkbox"
+checked
+onchange="toggleLayer('pins-senador'); actualizarLista();">
 
-<input id="checkEquipo" type="checkbox" checked onchange="toggleLayer('pins-equipo')">
+<input id="checkEquipo"
+type="checkbox"
+checked
+onchange="toggleLayer('pins-equipo'); actualizarLista();">
 </label>
 
 </div>
@@ -186,42 +195,89 @@ function toggleLayer(id){
     }
 
 }
-    function actualizarLista(){
-
-fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec")
-.then(response => response.json())
-.then(data => {
+   function actualizarLista(){
 
     let html = "";
 
-    data.features.forEach(item => {
+    Promise.all([
 
-    html += `
-    <div
-    style="
-    margin-bottom:15px;
-    padding-bottom:10px;
-    border-bottom:1px solid #ddd;
-    cursor:pointer;
-    "
-    onclick="irActividad(
-    ${item.geometry.coordinates[0]},
-    ${item.geometry.coordinates[1]}
-    )"
-    >
+        fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec")
+        .then(r => r.json()),
 
-    <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
+        fetch("https://script.google.com/macros/s/AKfycbz26NHWn4zO9T8QC8OAqfFleShlGG-iQG7vPErbpjCvFlbd0Iy5RfL4fncnqMGrmEJj7Q/exec")
+        .then(r => r.json())
 
-    ${item.properties.actividad}<br>
+    ]).then(([senador, equipo]) => {
 
-    <small>${item.properties.ubicacion}</small>
+        // SENADOR
+        if(document.getElementById("checkSenador").checked){
 
-    </div>
-    `;
-});
-    document.getElementById("lista-actividades").innerHTML = html;
+            senador.features.forEach(item => {
 
-});
+                html += `
+                <div
+                style="
+                margin-bottom:15px;
+                padding-bottom:10px;
+                border-bottom:1px solid #ddd;
+                cursor:pointer;
+                "
+                onclick="irActividad(
+                ${item.geometry.coordinates[0]},
+                ${item.geometry.coordinates[1]}
+                )">
+
+                <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
+
+                ${item.properties.actividad}<br>
+
+                <small>${item.properties.ubicacion}</small>
+
+                </div>
+                `;
+
+            });
+
+        }
+
+        // EQUIPO
+        if(document.getElementById("checkEquipo").checked){
+
+            equipo.features.forEach(item => {
+
+                html += `
+                <div
+                style="
+                margin-bottom:15px;
+                padding-bottom:10px;
+                border-bottom:1px solid #ddd;
+                cursor:pointer;
+                "
+                onclick="irActividad(
+                ${item.geometry.coordinates[0]},
+                ${item.geometry.coordinates[1]}
+                )">
+
+                <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
+
+                ${item.properties.actividad}<br>
+
+                <small>${item.properties.ubicacion}</small>
+
+                </div>
+                `;
+
+            });
+
+        }
+
+        if(html === ""){
+            html = "Sin elementos";
+        }
+
+        document.getElementById("lista-actividades").innerHTML = html;
+
+    });
 
 }
     function irActividad(lng, lat){
