@@ -127,7 +127,15 @@ map.on("load",()=>{
         type:"geojson",
         data:"https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
     });
+    map.addSource("senador", {
+  type: "geojson",
+  data: "https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec"
+});
 
+map.addSource("equipo", {
+  type: "geojson",
+  data: "https://script.google.com/macros/s/AKfycbz26NHWn4zO9T8QC8OAqfFleShlGG-iQG7vPErbpjCvFlbd0Iy5RfL4fncnqMGrmEJj7Q/exec"
+});
     map.addLayer({
         id:"pins",
         type:"circle",
@@ -139,6 +147,28 @@ map.on("load",()=>{
             "circle-stroke-color":"#ffffff"
         }
     });
+    map.addLayer({
+  id: "pins-senador",
+  type: "circle",
+  source: "senador",
+  paint: {
+    "circle-radius": 8,
+    "circle-color": "#ff0000",
+    "circle-stroke-width": 2,
+    "circle-stroke-color": "#ffffff"
+  }
+});
+    map.addLayer({
+  id: "pins-equipo",
+  type: "circle",
+  source: "equipo",
+  paint: {
+    "circle-radius": 8,
+    "circle-color": "#00aa00",
+    "circle-stroke-width": 2,
+    "circle-stroke-color": "#ffffff"
+  }
+});
 
     // GeoJSON completo del estado
     map.addSource("secciones-local",{
