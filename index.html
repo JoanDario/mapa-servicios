@@ -45,7 +45,16 @@ html, body{
 #buscador input{
     width:110px;
 }
-
+#capas{
+    position:absolute;
+    top:90px;
+    left:15px;
+    z-index:999;
+    background:white;
+    padding:10px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
 </style>
 
 </head>
@@ -117,9 +126,49 @@ function buscarSeccion(){
     map.fitBounds(bounds,{
         padding:40
     });
+<div id="capas">
+
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins')">
+Servicios
+</label><br>
+
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins-senador')">
+Senador
+</label><br>
+
+<label>
+<input type="checkbox" checked onchange="toggleLayer('pins-equipo')">
+Equipo
+</label>
+
+</div>
+}
+function toggleLayer(id){
+
+    const visible =
+        map.getLayoutProperty(id,"visibility");
+
+    if(visible === "none"){
+
+        map.setLayoutProperty(
+            id,
+            "visibility",
+            "visible"
+        );
+
+    } else {
+
+        map.setLayoutProperty(
+            id,
+            "visibility",
+            "none"
+        );
+
+    }
 
 }
-
 map.on("load",()=>{
 
     // Servicios
