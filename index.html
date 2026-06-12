@@ -193,6 +193,14 @@ function toggleLayer(id){
     }
 
 }
+    function irActividad(lng, lat){
+
+    map.flyTo({
+        center:[lng,lat],
+        zoom:16
+    });
+
+}
 map.on("load",()=>{
 
     // Servicios
