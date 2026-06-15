@@ -73,6 +73,19 @@ html, body{
 </head>
 
 <body>
+<script>
+
+const password = prompt("Contraseña:");
+
+if(password !== "Movimiento2027"){
+
+    document.body.innerHTML = "<h1>Acceso denegado</h1>";
+
+    throw new Error("Sin acceso");
+
+}
+
+</script>
 <div id="capas">
 
 <label>
