@@ -76,11 +76,13 @@ html, body{
 <div id="capas">
 
 <label>
+<!--
 <input id="checkServicios"
 type="checkbox"
 checked
 onchange="toggleLayer('pins'); actualizarLista();"> 
     Servicios
+-->
 
 <input id="checkSenador"
 type="checkbox"
@@ -318,6 +320,11 @@ map.addSource("equipo", {
             "circle-stroke-color":"#ffffff"
         }
     });
+    map.setLayoutProperty(
+    "pins",
+    "visibility",
+    "none"
+);
     map.addLayer({
   id: "pins-senador",
   type: "circle",
