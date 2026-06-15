@@ -400,7 +400,14 @@ map.addSource("equipo", {
 
       <p>
         <b>Fecha:</b><br>
-        ${props.fecha}
+        ${new Date(props.fecha).toLocaleDateString(
+    "es-MX",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+)}
       </p>
 
       <p>
