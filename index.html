@@ -317,10 +317,6 @@ map.on("load",()=>{
   type: "geojson",
   data: "https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec"
 });
-map.addSource("estrategia",{
-    type:"geojson",
-    data:"https://raw.githubusercontent.com/JoanDario/mapa-servicios/main/estrategia.geojson"
-});
     
 map.addSource("equipo", {
   type: "geojson",
@@ -363,17 +359,6 @@ map.addSource("equipo", {
     "circle-stroke-width": 2,
     "circle-stroke-color": "#ffffff"
   }
-});
-    map.addLayer({
-    id:"pins-estrategia",
-    type:"circle",
-    source:"estrategia",
-    paint:{
-    "circle-radius":20,
-    "circle-color":"#0000ff",
-    "circle-stroke-width":4,
-    "circle-stroke-color":"#ffffff"
-}
 });
 
     // GeoJSON completo del estado
@@ -501,56 +486,6 @@ map.addSource("equipo", {
         <b>Comentario:</b><br>
         ${props.comentario}
       </p>
-    `)
-    .addTo(map);
-
-});
-
-map.on("click","pins-estrategia",(e)=>{
-
-    const props = e.features[0].properties;
-
-    new mapboxgl.Popup()
-    .setLngLat(e.lngLat)
-    .setHTML(`
-
-        <h3>Sección ${props.SECCION}</h3>
-
-        <p>
-        <b>Municipio:</b><br>
-        ${props.Municipio}
-        </p>
-
-        <p>
-        <b>Partido ganador:</b><br>
-        ${props.Partido_Ganador}
-        </p>
-
-        <p>
-        <b>Segundo lugar:</b><br>
-        ${props.Segundo_Lugar}
-        </p>
-
-        <p>
-        <b>Margen:</b><br>
-        ${props.Margen}
-        </p>
-
-        <p>
-        <b>Participación:</b><br>
-        ${props.Participacion}
-        </p>
-
-        <p>
-        <b>Lista nominal:</b><br>
-        ${props.Lista_Nominal}
-        </p>
-
-        <p>
-        <b>Meta seccionales:</b><br>
-        ${props.Meta_Seccionales}
-        </p>
-
     `)
     .addTo(map);
 
