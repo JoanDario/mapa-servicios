@@ -385,6 +385,16 @@ map.addSource("equipo", {
         },
         filter:["==","SECCION_2026",""]
     });
+    map.addLayer({
+    id:"historico-2024",
+    type:"fill",
+    source:"secciones-local",
+    paint:{
+        "fill-color":"#00ff00",
+        "fill-opacity":0.35
+    },
+    filter:["==","SECCION_2024_ASIGNADA",-1]
+});
 
     // Popups
     map.on("click","pins",(e)=>{
