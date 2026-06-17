@@ -96,7 +96,8 @@ checked
 onchange="toggleLayer('pins'); actualizarLista();"> 
     Servicios
 -->
-
+<input id="checkHistorico" type="checkbox">
+Histórico 2024
 <input id="checkSenador"
 type="checkbox"
 checked
@@ -384,7 +385,7 @@ map.addSource("equipo", {
     source:"secciones-local",
     paint:{
         "fill-color":"#00ff00",
-        "fill-opacity":0.35
+        "fill-opacity":0.08
     },
     filter:["==","SECCION_2024_ASIGNADA",2134]
 });
@@ -402,6 +403,14 @@ map.addSource("equipo", {
         "text-halo-width":1.5
     },
     filter:["==","SECCION_2024_ASIGNADA",2134]
+});
+    document.getElementById("checkHistorico").addEventListener("change", function() {
+
+    const visible = this.checked ? "visible" : "none";
+
+    map.setLayoutProperty("historico-2024", "visibility", visible);
+    map.setLayoutProperty("historico-2024-label", "visibility", visible);
+
 });
 
     // Popups
