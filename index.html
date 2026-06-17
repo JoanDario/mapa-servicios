@@ -388,6 +388,21 @@ map.addSource("equipo", {
     },
     filter:["==","SECCION_2024_ASIGNADA",2134]
 });
+    map.addLayer({
+    id:"historico-2024-label",
+    type:"symbol",
+    source:"secciones-local",
+    layout:{
+        "text-field":["to-string",["get","SECCION_2024_ASIGNADA"]],
+        "text-size":16
+    },
+    paint:{
+        "text-color":"#ffffff",
+        "text-halo-color":"#000000",
+        "text-halo-width":1.5
+    },
+    filter:["==","SECCION_2024_ASIGNADA",2134]
+});
 
     // Popups
     map.on("click","pins",(e)=>{
