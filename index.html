@@ -384,10 +384,10 @@ map.addSource("equipo", {
     type:"fill",
     source:"secciones-local",
     paint:{
-        "fill-color":"#FFFFFF",
-        "fill-opacity":0.25
+        "fill-color":"#7CFC00",
+        "fill-opacity":0.15
     },
-    filter:["==","SECCION_2024_ASIGNADA",2134]
+    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
     map.addLayer({
     id:"historico-2024-linea",
