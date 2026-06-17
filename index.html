@@ -155,34 +155,47 @@ function buscarSeccion(){
 
     const features = map.querySourceFeatures("secciones-local");
 
-    const encontrada = features.find(
+    // Buscar primero por sección 2026
+    let encontradas = features.filter(
         f => String(f.properties.SECCION_2026) === seccion
     );
 
-    if(!encontrada){
+    // Si no encontró, buscar por sección histórica
+    if(encontradas.length === 0){
+
+        encontradas = features.filter(
+            f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
+        );
+
+    }
+
+    if(encontradas.length === 0){
         alert("Sección no encontrada");
         return;
     }
 
+    // Resaltar todas las encontradas
     map.setFilter(
         "resaltado-seccion",
-        ["==","SECCION_2026",encontrada.properties.SECCION_2026]
+        ["in","SECCION_2026",
+            ...encontradas.map(f => f.properties.SECCION_2026)
+        ]
     );
 
     const bounds = new mapboxgl.LngLatBounds();
 
-    // Para Polygon y MultiPolygon
-    let coords;
+    encontradas.forEach(feature => {
 
-    if(encontrada.geometry.type === "Polygon"){
-        coords = encontrada.geometry.coordinates[0];
-    }
-    else{
-        coords = encontrada.geometry.coordinates[0][0];
-    }
+        let coords;
 
-    coords.forEach(coord=>{
-        bounds.extend(coord);
+        if(feature.geometry.type === "Polygon"){
+            coords = feature.geometry.coordinates[0];
+        } else {
+            coords = feature.geometry.coordinates[0][0];
+        }
+
+        coords.forEach(coord => bounds.extend(coord));
+
     });
 
     map.fitBounds(bounds,{
@@ -190,6 +203,7 @@ function buscarSeccion(){
     });
 
 }
+
 function toggleLayer(id){
 
     const visible =
