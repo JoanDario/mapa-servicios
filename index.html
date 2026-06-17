@@ -428,6 +428,10 @@ map.addSource("equipo", {
     },
     filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
+map.setLayoutProperty("historico-2024","visibility","none");
+map.setLayoutProperty("historico-2024-linea","visibility","none");
+map.setLayoutProperty("historico-2024-label","visibility","none");
+    
     document.getElementById("checkHistorico").addEventListener("change", function() {
 
     const visible = this.checked ? "visible" : "none";
