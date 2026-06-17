@@ -397,7 +397,7 @@ map.addSource("equipo", {
         "line-color":"#FFFFFF",
         "line-width":2
     },
-    filter:["==","SECCION_2024_ASIGNADA",2134]
+    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
     map.addLayer({
     id:"historico-2024-label",
@@ -412,7 +412,7 @@ map.addSource("equipo", {
         "text-halo-color":"#000000",
         "text-halo-width":1.5
     },
-    filter:["==","SECCION_2024_ASIGNADA",2134]
+    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
     document.getElementById("checkHistorico").addEventListener("change", function() {
 
