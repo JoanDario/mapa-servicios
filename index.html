@@ -137,6 +137,8 @@ Cargando...
 mapboxgl.accessToken =
 "pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
 
+let todasLasSecciones = [];
+    
 const map = new mapboxgl.Map({
     container: "map",
     style: "mapbox://styles/jdariovz/cmplmosub009r01snddodbh7z",
@@ -153,8 +155,8 @@ function buscarSeccion(){
 
     if(!seccion) return;
 
-    const features = map.querySourceFeatures("secciones-local");
-
+const features = todasLasSecciones;
+    
    // Buscar todas las secciones que tengan esa sección histórica
 let encontradas = features.filter(
     f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
@@ -381,8 +383,20 @@ map.addSource("equipo", {
 
     // GeoJSON completo del estado
     map.addSource("secciones-local",{
-        type:"geojson",
-        data:"https://raw.githubusercontent.com/JoanDario/mapa-servicios/main/PRIORIDAD%202027.geojson"
+    type:"geojson",
+    data:"PRIORIDAD 2027.geojson"
+});
+    fetch("PRIORIDAD%202027.geojson")
+    .then(r => r.json())
+    .then(data => {
+
+        todasLasSecciones = data.features;
+
+        console.log(
+            "Secciones cargadas:",
+            todasLasSecciones.length
+        );
+
     });
 
     // Resaltado amarillo
