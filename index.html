@@ -366,13 +366,6 @@ map.addSource("equipo", {
         type:"geojson",
         data:"https://raw.githubusercontent.com/JoanDario/mapa-servicios/main/PRIORIDAD%202027.geojson"
     });
-    fetch("https://raw.githubusercontent.com/JoanDario/mapa-servicios/main/Geo%20Mapeo%2027%20-%20Sheet1.csv")
-.then(r => r.text())
-.then(csv => {
-
-    console.log(csv);
-
-});
 
     // Resaltado amarillo
     map.addLayer({
