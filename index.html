@@ -155,19 +155,19 @@ function buscarSeccion(){
 
     const features = map.querySourceFeatures("secciones-local");
 
-    // Buscar primero por sección 2026
-    let encontradas = features.filter(
+   // Buscar todas las secciones que tengan esa sección histórica
+let encontradas = features.filter(
+    f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
+);
+
+// Si no encontró nada, probar como sección actual
+if(encontradas.length === 0){
+
+    encontradas = features.filter(
         f => String(f.properties.SECCION_2026) === seccion
     );
 
-    // Si no encontró, buscar por sección histórica
-    if(encontradas.length === 0){
-
-        encontradas = features.filter(
-            f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
-        );
-
-    }
+}
 
     if(encontradas.length === 0){
         alert("Sección no encontrada");
@@ -175,13 +175,16 @@ function buscarSeccion(){
     }
 
     // Resaltar todas las encontradas
-    map.setFilter(
-        "resaltado-seccion",
-        ["in","SECCION_2026",
-            ...encontradas.map(f => f.properties.SECCION_2026)
-        ]
-    );
+    const secciones2026 = [
+    ...new Set(
+        encontradas.map(f => f.properties.SECCION_2026)
+    )
+];
 
+map.setFilter(
+    "resaltado-seccion",
+    ["in","SECCION_2026", ...secciones2026]
+);
     const bounds = new mapboxgl.LngLatBounds();
 
     encontradas.forEach(feature => {
