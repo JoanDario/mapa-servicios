@@ -130,6 +130,16 @@ Cargando...
 
 <div id="map"></div>
 
+<div style="margin-top:8px;">
+    <input
+        type="number"
+        id="dfedInput"
+        placeholder="Distrito Federal"
+        style="width:120px;"
+    >
+    <button onclick="buscarDFED()">Ir</button>
+</div>
+
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
 
 <script>
@@ -323,6 +333,53 @@ function toggleLayer(id){
     map.flyTo({
         center:[lng,lat],
         zoom:16
+    });
+
+}
+function buscarDFED(){
+
+    const dfed = document
+        .getElementById("dfedInput")
+        .value
+        .trim();
+
+    if(!dfed) return;
+
+    const encontradas = todasLasSecciones.filter(
+        f => String(f.properties.DFED_2026) === dfed
+    );
+
+    if(encontradas.length === 0){
+        alert("Distrito no encontrado");
+        return;
+    }
+
+    // Resaltar todas las secciones del distrito
+    map.setFilter(
+        "resaltado-seccion",
+        ["in","SECCION_2026",
+            ...encontradas.map(f => f.properties.SECCION_2026)
+        ]
+    );
+
+    const bounds = new mapboxgl.LngLatBounds();
+
+    encontradas.forEach(feature => {
+
+        let coords;
+
+        if(feature.geometry.type === "Polygon"){
+            coords = feature.geometry.coordinates[0];
+        } else {
+            coords = feature.geometry.coordinates[0][0];
+        }
+
+        coords.forEach(coord => bounds.extend(coord));
+
+    });
+
+    map.fitBounds(bounds,{
+        padding:40
     });
 
 }
