@@ -109,14 +109,7 @@ type="checkbox"
 checked
 onchange="toggleLayer('pins-equipo'); actualizarLista();">
     Equipo
-<input
-    type="text"
-    id="dfederalInput"
-    placeholder="Distrito Federal">
 
-<button onclick="buscarDFED()">
-    Ir
-</button>
 </label>
 
 </div>
@@ -141,11 +134,14 @@ Cargando...
 
     <br><br>
 
-    <input type="number"
-           id="dfedInput"
-           placeholder="Distrito Federal">
+    <input
+    type="number"
+    id="dlocalInput"
+    placeholder="Distrito Local">
 
-    <button onclick="buscarDFED()">Ir</button>
+<button onclick="buscarDLOCAL()">
+    Ir
+</button>
 
 </div>
 
