@@ -433,7 +433,6 @@ function buscarDLOCAL(){
         ]
     );
 
-}
 const bounds = new mapboxgl.LngLatBounds();
 
 encontradas.forEach(feature => {
@@ -453,7 +452,8 @@ encontradas.forEach(feature => {
 map.fitBounds(bounds,{
     padding:40
 });
-    
+
+}    
 map.on("load",()=>{
 
     // Servicios
