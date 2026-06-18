@@ -143,6 +143,15 @@ Cargando...
     Ir
 </button>
 
+<input
+    type="number"
+    id="dfedInput"
+    placeholder="Distrito Federal">
+
+<button onclick="buscarDFED()">
+    Ir
+</button>
+
 </div>
 
 <div id="map"></div>
@@ -347,23 +356,26 @@ function toggleLayer(id){
 }
 function buscarDFED(){
 
-    const dfed = document
+    const distrito = document
         .getElementById("dfedInput")
         .value
         .trim();
 
-    if(!dfed) return;
+    if(!distrito) return;
+
+    const secciones = catalogoDistritos
+        .filter(x => x.federal === distrito)
+        .map(x => Number(x.seccion));
 
     const encontradas = todasLasSecciones.filter(
-        f => String(f.properties.DFED_2026) === dfed
+        f => secciones.includes(f.properties.SECCION_2026)
     );
 
     if(encontradas.length === 0){
-        alert("Distrito no encontrado");
+        alert("Distrito federal no encontrado");
         return;
     }
 
-    // Resaltar todas las secciones del distrito
     map.setFilter(
         "resaltado-seccion",
         ["in","SECCION_2026",
