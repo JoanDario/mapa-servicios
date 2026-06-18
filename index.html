@@ -150,6 +150,8 @@ mapboxgl.accessToken =
 "pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
 
 let todasLasSecciones = [];
+
+let catalogoDistritos = [];
     
 const map = new mapboxgl.Map({
     container: "map",
@@ -385,6 +387,36 @@ function buscarDFED(){
     });
 
 }
+function buscarDLOCAL(){
+
+    const distrito = document
+        .getElementById("dlocalInput")
+        .value
+        .trim();
+
+    if(!distrito) return;
+
+    const secciones = catalogoDistritos
+        .filter(x => x.local === distrito)
+        .map(x => Number(x.seccion));
+
+    const encontradas = todasLasSecciones.filter(
+        f => secciones.includes(f.properties.SECCION_2026)
+    );
+
+    if(encontradas.length === 0){
+        alert("Distrito local no encontrado");
+        return;
+    }
+
+    map.setFilter(
+        "resaltado-seccion",
+        ["in","SECCION_2026",
+            ...encontradas.map(f => f.properties.SECCION_2026)
+        ]
+    );
+
+}
 map.on("load",()=>{
 
     // Servicios
@@ -457,6 +489,25 @@ map.addSource("equipo", {
         );
 
     });
+    fetch("Catálogo de Secciones con Distritos Electorales Locales.xlsx - 1.csv")
+  .then(response => response.text())
+  .then(text => {
+
+    const lineas = text.split("\n");
+
+    catalogoDistritos = lineas.slice(1).map(linea => {
+
+      const c = linea.split(",");
+
+      return {
+        federal: c[2],
+        local: c[3],
+        seccion: c[5]
+      };
+
+    });
+
+  });
 
     // Resaltado amarillo
     map.addLayer({
