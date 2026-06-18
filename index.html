@@ -491,6 +491,14 @@ map.addSource("equipo", {
 
     // GeoJSON completo del estado
     map.addSource("secciones-local",{
+    map.addLayer({
+    id:"click-secciones",
+    type:"fill",
+    source:"secciones-local",
+    paint:{
+        "fill-opacity":0
+    }
+});
     type:"geojson",
     data:"PRIORIDAD 2027.geojson"
 });
@@ -697,7 +705,36 @@ map.setLayoutProperty("historico-2024-label","visibility","none");
     .addTo(map);
 
 });
+map.on("click", "click-secciones", (e) => {
 
+    const props = e.features[0].properties;
+
+    const seccion = Number(props.SECCION_2026);
+
+    const infoDistrito = catalogoDistritos.find(
+        d => Number(d.seccion) === seccion
+    );
+
+    let html = `
+        <h3>Sección ${seccion}</h3>
+    `;
+
+    if(infoDistrito){
+
+        html += `
+        <p>
+        <b>Distrito Federal:</b> ${infoDistrito.federal}<br>
+        <b>Distrito Local:</b> ${infoDistrito.local}
+        </p>
+        `;
+    }
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
+
+});
 actualizarLista();
     });   // ← cierre del map.on("load")
 </script>
