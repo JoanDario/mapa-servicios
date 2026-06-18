@@ -434,6 +434,26 @@ function buscarDLOCAL(){
     );
 
 }
+const bounds = new mapboxgl.LngLatBounds();
+
+encontradas.forEach(feature => {
+
+    let coords;
+
+    if(feature.geometry.type === "Polygon"){
+        coords = feature.geometry.coordinates[0];
+    } else {
+        coords = feature.geometry.coordinates[0][0];
+    }
+
+    coords.forEach(coord => bounds.extend(coord));
+
+});
+
+map.fitBounds(bounds,{
+    padding:40
+});
+    
 map.on("load",()=>{
 
     // Servicios
