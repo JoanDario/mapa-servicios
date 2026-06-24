@@ -534,19 +534,17 @@ map.addSource("equipo", {
 
     catalogoDistritos = lineas.slice(1).map(linea => {
 
-      const c = linea.split(",");
+        const c = linea.split(",");
 
-      return {
-
-        federal: c[2],
-        local: c[3],
-        municipio: c[5],
-        seccion: c[6],
-        lista_nominal: c[7],
-        ranking_lista_nominal: c[8],
-        categoria_lista_nominal: c[9]
-
-      };
+        return {
+            federal: c[2],
+            local: c[3],
+            municipio: c[5],
+            seccion: c[6],
+            lista_nominal: c[7],
+            ranking_lista_nominal: c[8],
+            categoria_lista_nominal: c[9]
+        };
 
     });
 
@@ -739,7 +737,7 @@ map.on("click", "click-secciones", (e) => {
     const infoDistrito = catalogoDistritos.find(
         d => Number(d.seccion) === seccion
     );
-
+    console.log(infoDistrito);
     let html = `
         <h3>Sección ${seccion}</h3>
     `;
