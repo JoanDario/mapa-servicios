@@ -526,9 +526,9 @@ map.addSource("equipo", {
         );
 
     });
-    fetch("Catálogo de Secciones con Distritos Electorales Locales.xlsx - 1.csv")
-  .then(response => response.text())
-  .then(text => {
+   fetch("Catálogo de Secciones con Distritos Electorales Locales.xlsx - 1.csv")
+.then(response => response.text())
+.then(text => {
 
     const lineas = text.split("\n");
 
@@ -537,15 +537,20 @@ map.addSource("equipo", {
       const c = linea.split(",");
 
       return {
+
         federal: c[2],
         local: c[3],
-        seccion: c[5]
+        municipio: c[5],
+        seccion: c[6],
+        lista_nominal: c[7],
+        ranking_lista_nominal: c[8],
+        categoria_lista_nominal: c[9]
+
       };
 
     });
 
-  });
-
+});
     // Resaltado amarillo
     map.addLayer({
     id:"click-secciones",
