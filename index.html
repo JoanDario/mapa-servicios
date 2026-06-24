@@ -739,15 +739,26 @@ map.on("click", "click-secciones", (e) => {
         <h3>Sección ${seccion}</h3>
     `;
 
-    if(infoDistrito){
+    if (infoDistrito) {
 
-        html += `
-        <p>
-        <b>Distrito Federal:</b> ${infoDistrito.federal}<br>
-        <b>Distrito Local:</b> ${infoDistrito.local}
-        </p>
-        `;
-    }
+    html += `
+    <p>
+    <b>Municipio:</b> ${infoDistrito.municipio}<br>
+    <b>Distrito Federal:</b> ${infoDistrito.federal}<br>
+    <b>Distrito Local:</b> ${infoDistrito.local}
+    </p>
+
+    <hr>
+
+    <p>
+    <b>Lista Nominal:</b> ${Number(infoDistrito.lista_nominal).toLocaleString()} personas<br>
+
+    <b>Ranking LN:</b> ${infoDistrito.ranking_lista_nominal}<br>
+
+    <b>Categoría:</b> ${infoDistrito.categoria_lista_nominal}
+    </p>
+    `;
+}
 
     new mapboxgl.Popup()
         .setLngLat(e.lngLat)
