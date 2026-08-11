@@ -110,6 +110,12 @@ checked
 onchange="toggleLayer('pins-equipo'); actualizarLista();">
     Equipo
 
+<!-- NUEVA CAPA DE VOTO CRUZADO -->
+        <input id="checkVotoCruzado"
+               type="checkbox"
+               onchange="toggleLayer('voto-cruzado-fill');">
+        Voto Cruzado
+
 </label>
 
 </div>
@@ -603,6 +609,55 @@ map.addSource("equipo", {
     },
     filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
+
+// ==========================================
+    // CAPA DE VOTO CRUZADO (SENADO VS AYUNTAMIENTO)
+    // ==========================================
+    map.addLayer({
+        id: "voto-cruzado-fill",
+        type: "fill",
+        source: "secciones-local",
+        paint: {
+            "fill-color": [
+                "match",
+                ["get", "TIPO_VOTO_CRUZADO"],
+                "Coincidencia (Voto Parejo)", "#4CAF50",
+                "Discrepancia a la Alta (Senado traccionó más)", "#2196F3",
+                "Discrepancia a la Baja (Alcalde traccionó más)", "#FF9800",
+                "#9E9E9E" // Color por defecto / Sin Clasificar
+            ],
+            "fill-opacity": 0.75,
+            "fill-outline-color": "#ffffff"
+        }
+    });
+
+    // Ocultar por defecto al cargar el mapa
+    map.setLayoutProperty("voto-cruzado-fill", "visibility", "none");
+
+    // Evento click para el popup de Voto Cruzado
+    map.on("click", "voto-cruzado-fill", (e) => {
+        const props = e.features[0].properties;
+        
+        // Limpiar decimales por seguridad
+        const senadoVotos = props.Votos_Senado_MC_2026 ? Math.round(Number(props.Votos_Senado_MC_2026)) : 0;
+        const aytoVotos = props.Votos_Ayuntamiento_MC_2026 ? Math.round(Number(props.Votos_Ayuntamiento_MC_2026)) : 0;
+
+        new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(`
+                <h3>Análisis Voto Cruzado</h3>
+                <p>
+                    <b>Sección:</b> ${props.SECCION_2026 || 'N/A'}<br/>
+                    <b>Municipio:</b> ${props.MUNICIPIO || 'N/A'}<br/>
+                    <b>Clasificación:</b> <b>${props.TIPO_VOTO_CRUZADO || 'Sin Clasificar'}</b>
+                </p>
+                <p>
+                    <b>Votos Senado MC:</b> ${senadoVotos}<br/>
+                    <b>Votos Ayuntamiento MC:</b> ${aytoVotos}
+                </p>
+            `)
+            .addTo(map);
+    });
 map.setLayoutProperty("historico-2024","visibility","none");
 map.setLayoutProperty("historico-2024-linea","visibility","none");
 map.setLayoutProperty("historico-2024-label","visibility","none");
