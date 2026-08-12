@@ -361,20 +361,17 @@ function toggleLayer(id){
 
 }
 function buscarDFED(){
-
-    const distrito = document
-        .getElementById("dfedInput")
-        .value
-        .trim();
-
+    const distrito = document.getElementById("dfedInput").value.trim();
     if(!distrito) return;
 
+    // Convertimos todo a texto y limpiamos espacios basura
     const secciones = catalogoDistritos
-        .filter(x => x.federal === distrito)
-        .map(x => Number(x.seccion));
+        .filter(x => x.federal && String(x.federal).trim() === distrito)
+        .map(x => String(x.seccion).trim());
 
+    // Comparamos peras con peras (Texto vs Texto)
     const encontradas = todasLasSecciones.filter(
-        f => secciones.includes(f.properties.SECCION_2026)
+        f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim())
     );
 
     if(encontradas.length === 0){
@@ -385,46 +382,35 @@ function buscarDFED(){
     map.setFilter(
         "resaltado-seccion",
         ["in","SECCION_2026",
-            ...encontradas.map(f => f.properties.SECCION_2026)
+            ...encontradas.map(f => f.properties.SECCION_2026) // Respetamos el formato original de Mapbox
         ]
     );
 
     const bounds = new mapboxgl.LngLatBounds();
-
     encontradas.forEach(feature => {
-
         let coords;
-
         if(feature.geometry.type === "Polygon"){
             coords = feature.geometry.coordinates[0];
         } else {
             coords = feature.geometry.coordinates[0][0];
         }
-
         coords.forEach(coord => bounds.extend(coord));
-
     });
 
-    map.fitBounds(bounds,{
-        padding:40
-    });
-
+    map.fitBounds(bounds,{ padding:40 });
 }
-function buscarDLOCAL(){
-
-    const distrito = document
-        .getElementById("dlocalInput")
-        .value
-        .trim();
-
+   function buscarDLOCAL(){
+    const distrito = document.getElementById("dlocalInput").value.trim();
     if(!distrito) return;
 
+    // Convertimos todo a texto y limpiamos espacios
     const secciones = catalogoDistritos
-        .filter(x => x.local === distrito)
-        .map(x => Number(x.seccion));
+        .filter(x => x.local && String(x.local).trim() === distrito)
+        .map(x => String(x.seccion).trim());
 
+    // Comparamos Texto vs Texto
     const encontradas = todasLasSecciones.filter(
-        f => secciones.includes(f.properties.SECCION_2026)
+        f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim())
     );
 
     if(encontradas.length === 0){
@@ -439,27 +425,20 @@ function buscarDLOCAL(){
         ]
     );
 
-const bounds = new mapboxgl.LngLatBounds();
+    const bounds = new mapboxgl.LngLatBounds();
+    encontradas.forEach(feature => {
+        let coords;
+        if(feature.geometry.type === "Polygon"){
+            coords = feature.geometry.coordinates[0];
+        } else {
+            coords = feature.geometry.coordinates[0][0];
+        }
+        coords.forEach(coord => bounds.extend(coord));
+    });
 
-encontradas.forEach(feature => {
-
-    let coords;
-
-    if(feature.geometry.type === "Polygon"){
-        coords = feature.geometry.coordinates[0];
-    } else {
-        coords = feature.geometry.coordinates[0][0];
-    }
-
-    coords.forEach(coord => bounds.extend(coord));
-
-});
-
-map.fitBounds(bounds,{
-    padding:40
-});
-
-}    
+    map.fitBounds(bounds,{ padding:40 });
+}
+    
 map.on("load",()=>{
 
     map.addSource("simpatizantes",{
@@ -533,24 +512,25 @@ map.addSource("equipo", {
    fetch("catalogo_secciones.csv")
 .then(response => response.text())
 .then(text => {
-
     const lineas = text.split("\n");
 
     catalogoDistritos = lineas.slice(1).map(linea => {
-
         const c = linea.split(",");
+        
+        // Si la línea está vacía, nos la saltamos
+        if(c.length < 9) return null; 
 
         return {
-            federal: c[2],
-            local: c[3],
-            municipio: c[5],
-            seccion: c[6],
-            lista_nominal: c[7],
-            ranking_lista_nominal: c[8],
-            categoria_lista_nominal: c[9]
+            federal: c[2] ? c[2].trim() : "",
+            local: c[3] ? c[3].trim() : "",
+            municipio: c[5] ? c[5].trim() : "",
+            seccion: c[6] ? c[6].trim() : "",
+            lista_nominal: c[7] ? c[7].trim() : "",
+            ranking_lista_nominal: c[8] ? c[8].trim() : "",
+            categoria_lista_nominal: c[9] ? c[9].trim() : ""
         };
-
-    });
+    }).filter(item => item !== null); // Filtramos los nulos
+});
 
 });
 
