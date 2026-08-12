@@ -275,10 +275,10 @@ function toggleLayer(id){
 
     Promise.all([
 
-        fetch("https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec")
+        fetch("https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec")
         .then(r => r.json()),
 
-        fetch("https://script.google.com/macros/s/AKfycbz26NHWn4zO9T8QC8OAqfFleShlGG-iQG7vPErbpjCvFlbd0Iy5RfL4fncnqMGrmEJj7Q/exec")
+        fetch("https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec")
         .then(r => r.json())
 
     ]).then(([senador, equipo]) => {
@@ -468,12 +468,12 @@ map.on("load",()=>{
     });
     map.addSource("senador", {
   type: "geojson",
-  data: "https://script.google.com/macros/s/AKfycbz-KYyqBIAkw6DgSOcg9iIPTrbtK3zjQbiCBpeS3i3L0VtqNS5kpxP1koutww8uYKvpKw/exec"
+  data: "https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec"
 });
     
 map.addSource("equipo", {
   type: "geojson",
-  data: "https://script.google.com/macros/s/AKfycbz26NHWn4zO9T8QC8OAqfFleShlGG-iQG7vPErbpjCvFlbd0Iy5RfL4fncnqMGrmEJj7Q/exec"
+  data: "https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec"
 });
     map.addLayer({
         id:"pins",
