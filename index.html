@@ -89,13 +89,6 @@ if(password !== "Movimiento2027"){
 <div id="capas">
 
 <label>
-<!--
-<input id="checkServicios"
-type="checkbox"
-checked
-onchange="toggleLayer('pins'); actualizarLista();"> 
-    Servicios
--->
 <input id="checkHistorico" type="checkbox">
 Histórico 2024
 <input id="checkSenador"
@@ -110,15 +103,27 @@ checked
 onchange="toggleLayer('pins-equipo'); actualizarLista();">
     Equipo
 
-<!-- NUEVA CAPA DE VOTO CRUZADO -->
-        <input id="checkVotoCruzado"
-               type="checkbox"
-               onchange="toggleLayer('voto-cruzado-fill');">
-        Voto Cruzado
+<input id="checkVotoCruzado"
+       type="checkbox"
+       onchange="
+           toggleLayer('voto-cruzado-fill');
+           const leyenda = document.getElementById('leyenda-voto-cruzado');
+           leyenda.style.display = this.checked ? 'block' : 'none';
+       ">
+Voto Cruzado
 
 </label>
 
 </div>
+
+<!-- Cajo de Leyenda para Voto Cruzado -->
+<div id="leyenda-voto-cruzado" style="display: none; position: absolute; bottom: 30px; right: 15px; z-index: 999; background: white; padding: 12px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.2); font-family: Arial, sans-serif; font-size: 12px;">
+    <b style="font-size: 13px;">Tipología Voto Cruzado</b><br><br>
+    <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#4CAF50; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Coincidencia (Voto Parejo)</div>
+    <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#2196F3; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Senado traccionó más</div>
+    <div><span style="display:inline-block; width:12px; height:12px; background:#FF9800; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Alcalde traccionó más</div>
+</div>
+
     <div id="panel-lista">
 
 <h3>Actividades</h3>
@@ -532,7 +537,7 @@ map.addSource("equipo", {
         );
 
     });
-   fetch("Catálogo de Secciones con Distritos Electorales Locales.xlsx - 1.csv")
+   fetch("Catálogo de Secciones con Distritos Electorales Locales.xlsx - 1.csv")
 .then(response => response.text())
 .then(text => {
 
@@ -610,9 +615,7 @@ map.addSource("equipo", {
     filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
 
-// ==========================================
     // CAPA DE VOTO CRUZADO (SENADO VS AYUNTAMIENTO)
-    // ==========================================
     map.addLayer({
         id: "voto-cruzado-fill",
         type: "fill",
@@ -624,21 +627,18 @@ map.addSource("equipo", {
                 "Coincidencia (Voto Parejo)", "#4CAF50",
                 "Discrepancia a la Alta (Senado traccionó más)", "#2196F3",
                 "Discrepancia a la Baja (Alcalde traccionó más)", "#FF9800",
-                "#9E9E9E" // Color por defecto / Sin Clasificar
+                "#9E9E9E"
             ],
             "fill-opacity": 0.75,
             "fill-outline-color": "#ffffff"
         }
     });
 
-    // Ocultar por defecto al cargar el mapa
     map.setLayoutProperty("voto-cruzado-fill", "visibility", "none");
 
-    // Evento click para el popup de Voto Cruzado
     map.on("click", "voto-cruzado-fill", (e) => {
         const props = e.features[0].properties;
         
-        // Limpiar decimales por seguridad
         const senadoVotos = props.Votos_Senado_MC_2026 ? Math.round(Number(props.Votos_Senado_MC_2026)) : 0;
         const aytoVotos = props.Votos_Ayuntamiento_MC_2026 ? Math.round(Number(props.Votos_Ayuntamiento_MC_2026)) : 0;
 
@@ -658,6 +658,7 @@ map.addSource("equipo", {
             `)
             .addTo(map);
     });
+
 map.setLayoutProperty("historico-2024","visibility","none");
 map.setLayoutProperty("historico-2024-linea","visibility","none");
 map.setLayoutProperty("historico-2024-label","visibility","none");
@@ -808,7 +809,7 @@ map.on("click", "click-secciones", (e) => {
 
     <hr>
 
-    <p>
+    p>
     <b>Lista Nominal:</b> ${Number(infoDistrito.lista_nominal).toLocaleString()} personas<br>
 
     <b>Ranking LN:</b> ${infoDistrito.ranking_lista_nominal}<br>
@@ -825,7 +826,7 @@ map.on("click", "click-secciones", (e) => {
 
 });
 actualizarLista();
-    });   // ← cierre del map.on("load")
+    });   
 </script>
 
 </body>
