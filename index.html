@@ -116,7 +116,7 @@ Voto Cruzado
 
 </div>
 
-<!-- Cajo de Leyenda para Voto Cruzado -->
+<!-- Cajón de Leyenda para Voto Cruzado -->
 <div id="leyenda-voto-cruzado" style="display: none; position: absolute; bottom: 30px; right: 15px; z-index: 999; background: white; padding: 12px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.2); font-family: Arial, sans-serif; font-size: 12px;">
     <b style="font-size: 13px;">Tipología Voto Cruzado</b><br><br>
     <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#4CAF50; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Coincidencia (Voto Parejo)</div>
@@ -196,12 +196,10 @@ function buscarSeccion(){
 
 const features = todasLasSecciones;
     
-   // Buscar todas las secciones que tengan esa sección histórica
 let encontradas = features.filter(
     f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
 );
 
-// Si no encontró nada, probar como sección actual
 if(encontradas.length === 0){
 
     encontradas = features.filter(
@@ -215,7 +213,6 @@ if(encontradas.length === 0){
         return;
     }
 
-    // Resaltar todas las encontradas
     const secciones2026 = [
     ...new Set(
         encontradas.map(f => f.properties.SECCION_2026)
@@ -286,7 +283,6 @@ function toggleLayer(id){
 
     ]).then(([senador, equipo]) => {
 
-        // SENADOR
         if(document.getElementById("checkSenador").checked){
 
             senador.features.forEach(item => {
@@ -317,7 +313,6 @@ function toggleLayer(id){
 
         }
 
-        // EQUIPO
         if(document.getElementById("checkEquipo").checked){
 
             equipo.features.forEach(item => {
@@ -467,7 +462,6 @@ map.fitBounds(bounds,{
 }    
 map.on("load",()=>{
 
-    // Servicios
     map.addSource("simpatizantes",{
         type:"geojson",
         data:"https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
@@ -520,8 +514,7 @@ map.addSource("equipo", {
   }
 });
 
-    // GeoJSON completo del estado
-   map.addSource("secciones-local",{
+    map.addSource("secciones-local",{
     type:"geojson",
     data:"PRIORIDAD_2027.geojson"
 });
@@ -560,7 +553,7 @@ map.addSource("equipo", {
     });
 
 });
-    // Resaltado amarillo
+
     map.addLayer({
     id:"click-secciones",
     type:"fill",
@@ -615,7 +608,6 @@ map.addSource("equipo", {
     filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
 });
 
-    // CAPA DE VOTO CRUZADO (SENADO VS AYUNTAMIENTO)
     map.addLayer({
         id: "voto-cruzado-fill",
         type: "fill",
@@ -673,7 +665,6 @@ map.setLayoutProperty("historico-2024-label","visibility","none");
 
 });
 
-    // Popups
     map.on("click","pins",(e)=>{
 
         const props = e.features[0].properties;
@@ -784,6 +775,7 @@ map.setLayoutProperty("historico-2024-label","visibility","none");
     .addTo(map);
 
 });
+
 map.on("click", "click-secciones", (e) => {
 
     const props = e.features[0].properties;
@@ -809,7 +801,7 @@ map.on("click", "click-secciones", (e) => {
 
     <hr>
 
-    p>
+    <p>
     <b>Lista Nominal:</b> ${Number(infoDistrito.lista_nominal).toLocaleString()} personas<br>
 
     <b>Ranking LN:</b> ${infoDistrito.ranking_lista_nominal}<br>
@@ -825,6 +817,7 @@ map.on("click", "click-secciones", (e) => {
         .addTo(map);
 
 });
+
 actualizarLista();
     });   
 </script>
