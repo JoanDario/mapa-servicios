@@ -120,8 +120,8 @@ Voto Cruzado
 <div id="leyenda-voto-cruzado" style="display: none; position: absolute; bottom: 30px; right: 15px; z-index: 999; background: white; padding: 12px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.2); font-family: Arial, sans-serif; font-size: 12px;">
     <b style="font-size: 13px;">Tipología Voto Cruzado</b><br><br>
     <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#4CAF50; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Coincidencia (Voto Parejo)</div>
-    <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#2196F3; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Senado traccionó más</div>
-    <div><span style="display:inline-block; width:12px; height:12px; background:#FF9800; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Alcalde traccionó más</div>
+    <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#FF9800; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Senado traccionó más</div>
+    <div><span style="display:inline-block; width:12px; height:12px; background:#555555; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Alcalde traccionó más</div>
 </div>
 
     <div id="panel-lista">
@@ -595,8 +595,8 @@ map.addSource("equipo", {
                 "match",
                 ["get", "TIPO_VOTO_CRUZADO"],
                 "Coincidencia (Voto Parejo)", "#4CAF50",
-                "Discrepancia a la Alta (Senado traccionó más)", "#2196F3",
-                "Discrepancia a la Baja (Alcalde traccionó más)", "#FF9800",
+                "Discrepancia a la Alta (Senado traccionó más)", "#FF9800", // Naranja
+                "Discrepancia a la Baja (Alcalde traccionó más)", "#555555", // Gris Oscuro
                 "#9E9E9E"
             ],
             "fill-opacity": 0.75,
