@@ -3,117 +3,75 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Mapa de Servicios</title>
 
-<link
-href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
-rel="stylesheet"
-/>
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
 
 <style>
-
 html, body{
-    margin:0;
-    padding:0;
-    width:100%;
-    height:100%;
+    margin:0; padding:0; width:100%; height:100%;
 }
-
 #map{
-    width:100vw;
-    height:100vh;
+    width:100vw; height:100vh;
 }
-
 .mapboxgl-popup-content{
-    font-family:Arial, sans-serif;
-    border-radius:12px;
-    padding:12px;
+    font-family:Arial, sans-serif; border-radius:12px; padding:12px;
 }
-
 #buscador{
-    position:absolute;
-    top:15px;
-    left:15px;
-    z-index:999;
-    background:white;
-    padding:10px;
-    border-radius:10px;
+    position:absolute; top:15px; left:15px; z-index:999;
+    background:white; padding:10px; border-radius:10px;
     box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
-
-#buscador input{
-    width:110px;
-}
+#buscador input{ width:110px; }
 #capas{
-    position:absolute;
-    top:90px;
-    left:15px;
-    z-index:999;
-    background:white;
-    padding:10px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.2);
+    position:absolute; top:90px; left:15px; z-index:999;
+    background:white; padding:12px; border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2); font-family:Arial, sans-serif; font-size: 14px;
 }
-    #panel-lista{
-    position:absolute;
-    top:220px;
-    left:15px;
-    width:250px;
-    max-height:400px;
-    overflow-y:auto;
-    background:white;
-    padding:10px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.2);
-    z-index:999;
+#panel-lista{
+    position:absolute; top:280px; left:15px; width:250px; max-height:400px;
+    overflow-y:auto; background:white; padding:10px; border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:999; font-family:Arial, sans-serif;
 }
 </style>
-
 </head>
 
 <body>
 <script>
-
 const password = prompt("Contraseña:");
-
 if(password !== "Movimiento2027"){
-
     document.body.innerHTML = "<h1>Acceso denegado</h1>";
-
     throw new Error("Sin acceso");
-
 }
-
 </script>
+
 <div id="capas">
-
-<label>
-<input id="checkHistorico" type="checkbox">
-Histórico 2024
-<input id="checkSenador"
-type="checkbox"
-checked
-onchange="toggleLayer('pins-senador'); actualizarLista();">
-    Senador
-
-<input id="checkEquipo"
-type="checkbox"
-checked
-onchange="toggleLayer('pins-equipo'); actualizarLista();">
-    Equipo
-
-<input id="checkVotoCruzado"
-       type="checkbox"
-       onchange="
-           toggleLayer('voto-cruzado-fill');
-           const leyenda = document.getElementById('leyenda-voto-cruzado');
-           leyenda.style.display = this.checked ? 'block' : 'none';
-       ">
-Voto Cruzado
-
-</label>
-
+    <label style="display: block; margin-bottom: 5px;">
+        <input id="checkHistorico" type="checkbox"> Histórico 2024
+    </label>
+    <label style="display: block; margin-bottom: 5px;">
+        <input id="checkSenador" type="checkbox" checked onchange="toggleLayer('pins-senador'); actualizarLista();"> Senador
+    </label>
+    <label style="display: block; margin-bottom: 10px;">
+        <input id="checkEquipo" type="checkbox" checked onchange="toggleLayer('pins-equipo'); actualizarLista();"> Equipo
+    </label>
+    
+    <!-- NUEVO MENÚ DE VOTO CRUZADO -->
+    <div style="border-top: 1px solid #ccc; padding-top: 10px;">
+        <b style="font-size: 14px;">Capas Voto Cruzado</b><br>
+        <label style="display: block; margin-top: 5px;">
+            <input type="radio" name="vc_layer" value="none" checked onchange="cambiarCapaVC(this.value)"> Ninguno
+        </label>
+        <label style="display: block;">
+            <input type="radio" name="vc_layer" value="municipal" onchange="cambiarCapaVC(this.value)"> Alcaldías (Municipal)
+        </label>
+        <label style="display: block;">
+            <input type="radio" name="vc_layer" value="local" onchange="cambiarCapaVC(this.value)"> Diputaciones Locales
+        </label>
+        <label style="display: block;">
+            <input type="radio" name="vc_layer" value="federal" onchange="cambiarCapaVC(this.value)"> Diputaciones Federales
+        </label>
+    </div>
 </div>
 
 <!-- Cajón de Leyenda para Voto Cruzado -->
@@ -121,61 +79,32 @@ Voto Cruzado
     <b style="font-size: 13px;">Tipología Voto Cruzado</b><br><br>
     <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#4CAF50; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Coincidencia (Voto Parejo)</div>
     <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#FF9800; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Senado traccionó más</div>
-    <div><span style="display:inline-block; width:12px; height:12px; background:#555555; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Alcalde traccionó más</div>
+    <div><span style="display:inline-block; width:12px; height:12px; background:#555555; border-radius:3px; margin-right:6px; vertical-align:middle;"></span> Alcalde/Dip traccionó más</div>
 </div>
 
-    <div id="panel-lista">
-
-<h3>Actividades</h3>
-
-<div id="lista-actividades">
-
-Cargando...
-
+<div id="panel-lista">
+    <h3 style="margin-top:0;">Actividades</h3>
+    <div id="lista-actividades">Cargando...</div>
 </div>
 
-</div>
 <div id="buscador">
-
-    <input type="number"
-           id="seccionInput"
-           placeholder="Buscar sección">
-
-    <button onclick="buscarSeccion()">Ir</button>
-
-    <br><br>
-
-    <input
-    type="number"
-    id="dlocalInput"
-    placeholder="Distrito Local">
-
-<button onclick="buscarDLOCAL()">
-    Ir
-</button>
-
-<input
-    type="number"
-    id="dfedInput"
-    placeholder="Distrito Federal">
-
-<button onclick="buscarDFED()">
-    Ir
-</button>
-
+    <input type="number" id="seccionInput" placeholder="Buscar sección">
+    <button onclick="buscarSeccion()">Ir</button><br><br>
+    
+    <input type="number" id="dlocalInput" placeholder="Distrito Local">
+    <button onclick="buscarDLOCAL()">Ir</button>
+    
+    <input type="number" id="dfedInput" placeholder="Distrito Federal">
+    <button onclick="buscarDFED()">Ir</button>
 </div>
 
 <div id="map"></div>
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
-
 <script>
-
-mapboxgl.accessToken =
-"pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
+mapboxgl.accessToken = "pk.eyJ1IjoiamRhcmlvdnoiLCJhIjoiY21wbGx4bTJ6MjZ3NDJ4cHQ2Y3NvcTA3bCJ9.wCONIcDFuubKj_Irb8NdRQ";
 
 let todasLasSecciones = [];
-
 let catalogoDistritos = [];
     
 const map = new mapboxgl.Map({
@@ -186,431 +115,270 @@ const map = new mapboxgl.Map({
 });
 
 function buscarSeccion(){
-
-    const seccion = document
-        .getElementById("seccionInput")
-        .value
-        .trim();
-
+    const seccion = document.getElementById("seccionInput").value.trim();
     if(!seccion) return;
-
-const features = todasLasSecciones;
-    
-let encontradas = features.filter(
-    f => String(f.properties.SECCION_2024_ASIGNADA) === seccion
-);
-
-if(encontradas.length === 0){
-
-    encontradas = features.filter(
-        f => String(f.properties.SECCION_2026) === seccion
-    );
-
-}
-
+    const features = todasLasSecciones;
+    let encontradas = features.filter(f => String(f.properties.SECCION_2024_ASIGNADA) === seccion);
     if(encontradas.length === 0){
-        alert("Sección no encontrada");
-        return;
+        encontradas = features.filter(f => String(f.properties.SECCION_2026) === seccion);
     }
-
-    const secciones2026 = [
-    ...new Set(
-        encontradas.map(f => f.properties.SECCION_2026)
-    )
-];
-
-map.setFilter(
-    "resaltado-seccion",
-    ["in","SECCION_2026", ...secciones2026]
-);
+    if(encontradas.length === 0){
+        alert("Sección no encontrada"); return;
+    }
+    const secciones2026 = [...new Set(encontradas.map(f => f.properties.SECCION_2026))];
+    map.setFilter("resaltado-seccion", ["in","SECCION_2026", ...secciones2026]);
     const bounds = new mapboxgl.LngLatBounds();
-
     encontradas.forEach(feature => {
-
-        let coords;
-
-        if(feature.geometry.type === "Polygon"){
-            coords = feature.geometry.coordinates[0];
-        } else {
-            coords = feature.geometry.coordinates[0][0];
-        }
-
+        let coords = feature.geometry.type === "Polygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates[0][0];
         coords.forEach(coord => bounds.extend(coord));
-
     });
-
-    map.fitBounds(bounds,{
-        padding:40
-    });
-
+    map.fitBounds(bounds,{ padding:40 });
 }
 
 function toggleLayer(id){
-
-    const visible =
-        map.getLayoutProperty(id,"visibility");
-
+    const visible = map.getLayoutProperty(id,"visibility");
     if(visible === "none"){
-
-        map.setLayoutProperty(
-            id,
-            "visibility",
-            "visible"
-        );
-
+        map.setLayoutProperty(id, "visibility", "visible");
     } else {
-
-        map.setLayoutProperty(
-            id,
-            "visibility",
-            "none"
-        );
-
+        map.setLayoutProperty(id, "visibility", "none");
     }
-
 }
-   function actualizarLista(){
 
+// LÓGICA PARA APAGAR/PRENDER MAPAS DE VOTO CRUZADO
+function cambiarCapaVC(capa) {
+    map.setLayoutProperty("vc-municipal", "visibility", "none");
+    map.setLayoutProperty("vc-local", "visibility", "none");
+    map.setLayoutProperty("vc-federal", "visibility", "none");
+    
+    const leyenda = document.getElementById('leyenda-voto-cruzado');
+    
+    if (capa === "none") {
+        leyenda.style.display = 'none';
+    } else {
+        leyenda.style.display = 'block';
+        map.setLayoutProperty("vc-" + capa, "visibility", "visible");
+    }
+}
+
+function actualizarLista(){
     let html = "";
-
     Promise.all([
-
-        fetch("https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec")
-        .then(r => r.json()),
-
-        fetch("https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec")
-        .then(r => r.json())
-
+        fetch("https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec").then(r => r.json()),
+        fetch("https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec").then(r => r.json())
     ]).then(([senador, equipo]) => {
-
         if(document.getElementById("checkSenador").checked){
-
             senador.features.forEach(item => {
-
                 html += `
-                <div
-                style="
-                margin-bottom:15px;
-                padding-bottom:10px;
-                border-bottom:1px solid #ddd;
-                cursor:pointer;
-                "
-                onclick="irActividad(
-                ${item.geometry.coordinates[0]},
-                ${item.geometry.coordinates[1]}
-                )">
-
+                <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #ddd; cursor:pointer;"
+                onclick="irActividad(${item.geometry.coordinates[0]}, ${item.geometry.coordinates[1]})">
                 <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
-
-                ${item.properties.actividad}<br>
-
-                <small>${item.properties.ubicacion}</small>
-
-                </div>
-                `;
-
+                ${item.properties.actividad}<br><small>${item.properties.ubicacion}</small></div>`;
             });
-
         }
-
         if(document.getElementById("checkEquipo").checked){
-
             equipo.features.forEach(item => {
-
                 html += `
-                <div
-                style="
-                margin-bottom:15px;
-                padding-bottom:10px;
-                border-bottom:1px solid #ddd;
-                cursor:pointer;
-                "
-                onclick="irActividad(
-                ${item.geometry.coordinates[0]},
-                ${item.geometry.coordinates[1]}
-                )">
-
+                <div style="margin-bottom:15px; padding-bottom:10px; border-bottom:1px solid #ddd; cursor:pointer;"
+                onclick="irActividad(${item.geometry.coordinates[0]}, ${item.geometry.coordinates[1]})">
                 <b>${new Date(item.properties.fecha).toLocaleDateString("es-MX")}</b><br>
-
-                ${item.properties.actividad}<br>
-
-                <small>${item.properties.ubicacion}</small>
-
-                </div>
-                `;
-
+                ${item.properties.actividad}<br><small>${item.properties.ubicacion}</small></div>`;
             });
-
         }
-
-        if(html === ""){
-            html = "Sin elementos";
-        }
-
+        if(html === ""){ html = "Sin elementos"; }
         document.getElementById("lista-actividades").innerHTML = html;
-
     });
-
 }
-    function irActividad(lng, lat){
 
-    map.flyTo({
-        center:[lng,lat],
-        zoom:16
-    });
-
+function irActividad(lng, lat){
+    map.flyTo({ center:[lng,lat], zoom:16 });
 }
+
 function buscarDFED(){
     const distrito = document.getElementById("dfedInput").value.trim();
     if(!distrito) return;
-
-    // Convertimos todo a texto y limpiamos espacios basura
-    const secciones = catalogoDistritos
-        .filter(x => x.federal && String(x.federal).trim() === distrito)
-        .map(x => String(x.seccion).trim());
-
-    // Comparamos peras con peras (Texto vs Texto)
-    const encontradas = todasLasSecciones.filter(
-        f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim())
-    );
-
-    if(encontradas.length === 0){
-        alert("Distrito federal no encontrado");
-        return;
-    }
-
-    map.setFilter(
-        "resaltado-seccion",
-        ["in","SECCION_2026",
-            ...encontradas.map(f => f.properties.SECCION_2026) // Respetamos el formato original de Mapbox
-        ]
-    );
-
+    const secciones = catalogoDistritos.filter(x => x.federal && String(x.federal).trim() === distrito).map(x => String(x.seccion).trim());
+    const encontradas = todasLasSecciones.filter(f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim()));
+    if(encontradas.length === 0){ alert("Distrito federal no encontrado"); return; }
+    map.setFilter("resaltado-seccion", ["in","SECCION_2026", ...encontradas.map(f => f.properties.SECCION_2026)]);
     const bounds = new mapboxgl.LngLatBounds();
     encontradas.forEach(feature => {
-        let coords;
-        if(feature.geometry.type === "Polygon"){
-            coords = feature.geometry.coordinates[0];
-        } else {
-            coords = feature.geometry.coordinates[0][0];
-        }
+        let coords = feature.geometry.type === "Polygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates[0][0];
         coords.forEach(coord => bounds.extend(coord));
     });
-
     map.fitBounds(bounds,{ padding:40 });
 }
-   function buscarDLOCAL(){
+
+function buscarDLOCAL(){
     const distrito = document.getElementById("dlocalInput").value.trim();
     if(!distrito) return;
-
-    // Convertimos todo a texto y limpiamos espacios
-    const secciones = catalogoDistritos
-        .filter(x => x.local && String(x.local).trim() === distrito)
-        .map(x => String(x.seccion).trim());
-
-    // Comparamos Texto vs Texto
-    const encontradas = todasLasSecciones.filter(
-        f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim())
-    );
-
-    if(encontradas.length === 0){
-        alert("Distrito local no encontrado");
-        return;
-    }
-
-    map.setFilter(
-        "resaltado-seccion",
-        ["in","SECCION_2026",
-            ...encontradas.map(f => f.properties.SECCION_2026)
-        ]
-    );
-
+    const secciones = catalogoDistritos.filter(x => x.local && String(x.local).trim() === distrito).map(x => String(x.seccion).trim());
+    const encontradas = todasLasSecciones.filter(f => f.properties.SECCION_2026 && secciones.includes(String(f.properties.SECCION_2026).trim()));
+    if(encontradas.length === 0){ alert("Distrito local no encontrado"); return; }
+    map.setFilter("resaltado-seccion", ["in","SECCION_2026", ...encontradas.map(f => f.properties.SECCION_2026)]);
     const bounds = new mapboxgl.LngLatBounds();
     encontradas.forEach(feature => {
-        let coords;
-        if(feature.geometry.type === "Polygon"){
-            coords = feature.geometry.coordinates[0];
-        } else {
-            coords = feature.geometry.coordinates[0][0];
-        }
+        let coords = feature.geometry.type === "Polygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates[0][0];
         coords.forEach(coord => bounds.extend(coord));
     });
-
     map.fitBounds(bounds,{ padding:40 });
 }
     
 map.on("load",()=>{
-
-    map.addSource("simpatizantes",{
-        type:"geojson",
-        data:"https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec"
-    });
-    map.addSource("senador", {
-  type: "geojson",
-  data: "https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec"
-});
+    map.addSource("simpatizantes",{ type:"geojson", data:"https://script.google.com/macros/s/AKfycbxLaxqrumjT7zqjryDygDedvAejU04S46ZNVO70ROV9ylbPrqUpbbdkRMWwECDUMuI3/exec" });
+    map.addSource("senador", { type: "geojson", data: "https://script.google.com/macros/s/AKfycbz2ji3iCo7_pGchWf83-I8H0TieAeSUk5Bt5tE9Er-4FfhsP5KcqwjJTcmNmc6fwciFaw/exec" });
+    map.addSource("equipo", { type: "geojson", data: "https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec" });
     
-map.addSource("equipo", {
-  type: "geojson",
-  data: "https://script.google.com/macros/s/AKfycbxlbE9AWRQ-iS0fY37w_mzrdywPLVrJ5b-o7-50r0Sl8D_wSsPdcNLDggpg-_DXdZ9IdQ/exec"
-});
     map.addLayer({
-        id:"pins",
-        type:"circle",
-        source:"simpatizantes",
-        paint:{
-            "circle-radius":8,
-            "circle-color":"#00e5ff",
-            "circle-stroke-width":2,
-            "circle-stroke-color":"#ffffff"
-        }
+        id:"pins", type:"circle", source:"simpatizantes",
+        paint:{ "circle-radius":8, "circle-color":"#00e5ff", "circle-stroke-width":2, "circle-stroke-color":"#ffffff" }
     });
-    map.setLayoutProperty(
-    "pins",
-    "visibility",
-    "none"
-);
+    map.setLayoutProperty("pins", "visibility", "none");
+    
     map.addLayer({
-  id: "pins-senador",
-  type: "circle",
-  source: "senador",
-  paint: {
-    "circle-radius": 8,
-    "circle-color": "#ff0000",
-    "circle-stroke-width": 2,
-    "circle-stroke-color": "#ffffff"
-  }
-});
+        id: "pins-senador", type: "circle", source: "senador",
+        paint: { "circle-radius": 8, "circle-color": "#ff0000", "circle-stroke-width": 2, "circle-stroke-color": "#ffffff" }
+    });
     map.addLayer({
-  id: "pins-equipo",
-  type: "circle",
-  source: "equipo",
-  paint: {
-    "circle-radius": 8,
-    "circle-color": "#00aa00",
-    "circle-stroke-width": 2,
-    "circle-stroke-color": "#ffffff"
-  }
-});
+        id: "pins-equipo", type: "circle", source: "equipo",
+        paint: { "circle-radius": 8, "circle-color": "#00aa00", "circle-stroke-width": 2, "circle-stroke-color": "#ffffff" }
+    });
 
-    map.addSource("secciones-local",{
-    type:"geojson",
-    data:"PRIORIDAD_2027.geojson"
-});
-    fetch("PRIORIDAD_2027.geojson")
-    .then(r => r.json())
-    .then(data => {
-
+    map.addSource("secciones-local",{ type:"geojson", data:"PRIORIDAD_2027.geojson" });
+    
+    fetch("PRIORIDAD_2027.geojson").then(r => r.json()).then(data => {
         todasLasSecciones = data.features;
-
-        console.log(
-            "Secciones cargadas:",
-            todasLasSecciones.length
-        );
-
+        console.log("Secciones cargadas:", todasLasSecciones.length);
     });
-   fetch("catalogo_secciones.csv")
-.then(response => response.text())
-.then(text => {
-    const lineas = text.split("\n");
+    
+    fetch("catalogo_secciones.csv").then(response => response.text()).then(text => {
+        const lineas = text.split("\n");
+        catalogoDistritos = lineas.slice(1).map(linea => {
+            const c = linea.split(",");
+            if(c.length < 9) return null; 
+            return {
+                federal: c[2] ? c[2].trim() : "",
+                local: c[3] ? c[3].trim() : "",
+                municipio: c[5] ? c[5].trim() : "",
+                seccion: c[6] ? c[6].trim() : "",
+                lista_nominal: c[7] ? c[7].trim() : "",
+                ranking_lista_nominal: c[8] ? c[8].trim() : "",
+                categoria_lista_nominal: c[9] ? c[9].trim() : ""
+            };
+        }).filter(item => item !== null);
+    });
 
-    catalogoDistritos = lineas.slice(1).map(linea => {
-        const c = linea.split(",");
-        
-        // Si la línea está vacía, nos la saltamos
-        if(c.length < 9) return null; 
-
-        return {
-            federal: c[2] ? c[2].trim() : "",
-            local: c[3] ? c[3].trim() : "",
-            municipio: c[5] ? c[5].trim() : "",
-            seccion: c[6] ? c[6].trim() : "",
-            lista_nominal: c[7] ? c[7].trim() : "",
-            ranking_lista_nominal: c[8] ? c[8].trim() : "",
-            categoria_lista_nominal: c[9] ? c[9].trim() : ""
-        };
-    }).filter(item => item !== null); // Filtramos los nulos
-});
-
+    map.addLayer({ id:"click-secciones", type:"fill", source:"secciones-local", paint:{ "fill-opacity":0 }});
+    
     map.addLayer({
-    id:"click-secciones",
-    type:"fill",
-    source:"secciones-local",
-    paint:{
-        "fill-opacity":0
-    }
-});
-    map.addLayer({
-        id:"resaltado-seccion",
-        type:"line",
-        source:"secciones-local",
-        paint:{
-            "line-color":"#ffff00",
-            "line-width":5
-        },
+        id:"resaltado-seccion", type:"line", source:"secciones-local",
+        paint:{ "line-color":"#ffff00", "line-width":5 },
         filter:["in","SECCION_2026",""]
     });
-    map.addLayer({
-    id:"historico-2024",
-    type:"fill",
-    source:"secciones-local",
-    paint:{
-        "fill-color":"#7CFC00",
-        "fill-opacity":0.15
-    },
-    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
-});
-    map.addLayer({
-    id:"historico-2024-linea",
-    type:"line",
-    source:"secciones-local",
-    paint:{
-        "line-color":"#FFFFFF",
-        "line-width":2
-    },
-    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
-});
-    map.addLayer({
-    id:"historico-2024-label",
-    type:"symbol",
-    source:"secciones-local",
-    layout:{
-        "text-field":["to-string",["get","SECCION_2024_ASIGNADA"]],
-        "text-size":16
-    },
-    paint:{
-        "text-color":"#ffffff",
-        "text-halo-color":"#000000",
-        "text-halo-width":1.5
-    },
-    filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
-});
 
     map.addLayer({
-        id: "voto-cruzado-fill",
-        type: "fill",
-        source: "secciones-local",
+        id:"historico-2024", type:"fill", source:"secciones-local",
+        paint:{ "fill-color":"#7CFC00", "fill-opacity":0.15 },
+        filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
+    });
+    map.addLayer({
+        id:"historico-2024-linea", type:"line", source:"secciones-local",
+        paint:{ "line-color":"#FFFFFF", "line-width":2 },
+        filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
+    });
+    map.addLayer({
+        id:"historico-2024-label", type:"symbol", source:"secciones-local",
+        layout:{ "text-field":["to-string",["get","SECCION_2024_ASIGNADA"]], "text-size":16 },
+        paint:{ "text-color":"#ffffff", "text-halo-color":"#000000", "text-halo-width":1.5 },
+        filter: ["!=", ["get","SECCION_2024_ASIGNADA"], ["get","SECCION_2026"]]
+    });
+    map.setLayoutProperty("historico-2024","visibility","none");
+    map.setLayoutProperty("historico-2024-linea","visibility","none");
+    map.setLayoutProperty("historico-2024-label","visibility","none");
+    
+    document.getElementById("checkHistorico").addEventListener("change", function() {
+        const visible = this.checked ? "visible" : "none";
+        map.setLayoutProperty("historico-2024", "visibility", visible);
+        map.setLayoutProperty("historico-2024-linea", "visibility", visible);
+        map.setLayoutProperty("historico-2024-label", "visibility", visible);
+    });
+
+    // ==========================================
+    // CAPA 1: MUNICIPAL
+    // ==========================================
+    map.addLayer({
+        id: "vc-municipal", type: "fill", source: "secciones-local",
         paint: {
             "fill-color": [
-                "match",
-                ["get", "TIPO_VOTO_CRUZADO"],
+                "match", ["get", "TIPO_VOTO_CRUZADO"],
                 "Coincidencia (Voto Parejo)", "#4CAF50",
-                "Discrepancia a la Alta (Senado traccionó más)", "#FF9800", // Naranja
-                "Discrepancia a la Baja (Alcalde traccionó más)", "#555555", // Gris Oscuro
+                "Discrepancia a la Alta (Senado traccionó más)", "#FF9800",
+                "Discrepancia a la Baja (Alcalde traccionó más)", "#555555",
                 "#9E9E9E"
             ],
-            "fill-opacity": 0.75,
-            "fill-outline-color": "#ffffff"
+            "fill-opacity": 0.75, "fill-outline-color": "#ffffff"
         }
     });
 
-    map.setLayoutProperty("voto-cruzado-fill", "visibility", "none");
+    // ==========================================
+    // CAPA 2: DIPUTADOS LOCALES
+    // ==========================================
+    map.addLayer({
+        id: "vc-local", type: "fill", source: "secciones-local",
+        paint: {
+            "fill-color": [
+                "match", ["get", "VC_SEN_vs_LOCAL"],
+                "Coincidencia (Voto Parejo)", "#4CAF50",
+                "Discrepancia a la Alta (Senado traccionó más)", "#FF9800",
+                "Discrepancia a la Baja (Dip Local traccionó más)", "#555555",
+                "#9E9E9E"
+            ],
+            "fill-opacity": 0.75, "fill-outline-color": "#ffffff"
+        }
+    });
 
-    map.on("click", "voto-cruzado-fill", (e) => {
+    // ==========================================
+    // CAPA 3: DIPUTADOS FEDERALES
+    // ==========================================
+    map.addLayer({
+        id: "vc-federal", type: "fill", source: "secciones-local",
+        paint: {
+            "fill-color": [
+                "match", ["get", "VC_SEN_vs_FED"],
+                "Coincidencia (Voto Parejo)", "#4CAF50",
+                "Discrepancia a la Alta (Senado traccionó más)", "#FF9800",
+                "Discrepancia a la Baja (Dip Federal traccionó más)", "#555555",
+                "#9E9E9E"
+            ],
+            "fill-opacity": 0.75, "fill-outline-color": "#ffffff"
+        }
+    });
+
+    // Ocultar las 3 al inicio
+    map.setLayoutProperty("vc-municipal", "visibility", "none");
+    map.setLayoutProperty("vc-local", "visibility", "none");
+    map.setLayoutProperty("vc-federal", "visibility", "none");
+
+    // FUNCIÓN INTELIGENTE PARA LOS 3 POPUPS
+    function crearPopupVC(e, tipo) {
         const props = e.features[0].properties;
-        
         const senadoVotos = props.Votos_Senado_MC_2026 ? Math.round(Number(props.Votos_Senado_MC_2026)) : 0;
-        const aytoVotos = props.Votos_Ayuntamiento_MC_2026 ? Math.round(Number(props.Votos_Ayuntamiento_MC_2026)) : 0;
+        let contraVotos = 0;
+        let etiquetaContra = "";
+        let clasificacion = "";
+
+        if (tipo === 'municipal') {
+            contraVotos = props.Votos_Ayuntamiento_MC_2026 ? Math.round(Number(props.Votos_Ayuntamiento_MC_2026)) : 0;
+            etiquetaContra = "Votos Alcalde MC:";
+            clasificacion = props.TIPO_VOTO_CRUZADO || 'Sin Clasificar';
+        } else if (tipo === 'local') {
+            contraVotos = props.Votos_DipLocal_MC ? Math.round(Number(props.Votos_DipLocal_MC)) : 0;
+            etiquetaContra = "Votos Dip Local MC:";
+            clasificacion = props.VC_SEN_vs_LOCAL || 'Sin Clasificar';
+        } else if (tipo === 'federal') {
+            contraVotos = props.Votos_DipFed_MC ? Math.round(Number(props.Votos_DipFed_MC)) : 0;
+            etiquetaContra = "Votos Dip Fed MC:";
+            clasificacion = props.VC_SEN_vs_FED || 'Sin Clasificar';
+        }
 
         new mapboxgl.Popup()
             .setLngLat(e.lngLat)
@@ -619,186 +387,49 @@ map.addSource("equipo", {
                 <p>
                     <b>Sección:</b> ${props.SECCION_2026 || 'N/A'}<br/>
                     <b>Municipio:</b> ${props.MUNICIPIO || 'N/A'}<br/>
-                    <b>Clasificación:</b> <b>${props.TIPO_VOTO_CRUZADO || 'Sin Clasificar'}</b>
+                    <b>Clasificación:</b> <b>${clasificacion}</b>
                 </p>
                 <p>
                     <b>Votos Senado MC:</b> ${senadoVotos}<br/>
-                    <b>Votos Ayuntamiento MC:</b> ${aytoVotos}
+                    <b>${etiquetaContra}</b> ${contraVotos}
                 </p>
             `)
             .addTo(map);
-    });
+    }
 
-map.setLayoutProperty("historico-2024","visibility","none");
-map.setLayoutProperty("historico-2024-linea","visibility","none");
-map.setLayoutProperty("historico-2024-label","visibility","none");
-    
-    document.getElementById("checkHistorico").addEventListener("change", function() {
+    map.on("click", "vc-municipal", (e) => crearPopupVC(e, 'municipal'));
+    map.on("click", "vc-local", (e) => crearPopupVC(e, 'local'));
+    map.on("click", "vc-federal", (e) => crearPopupVC(e, 'federal'));
 
-    const visible = this.checked ? "visible" : "none";
-
-    map.setLayoutProperty("historico-2024", "visibility", visible);
-    map.setLayoutProperty("historico-2024-linea", "visibility", visible);
-    map.setLayoutProperty("historico-2024-label", "visibility", visible);
-
-});
-
+    // Resto de los clicks (Pins, Secciones genéricas)
     map.on("click","pins",(e)=>{
-
         const props = e.features[0].properties;
-
-        new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(`
-            <h3>${props.nombre}</h3>
-
-            <p>
-            <b>Servicio:</b><br>
-            ${props.servicio}
-            </p>
-
-            <p>
-            <b>Status:</b><br>
-            ${props.status}
-            </p>
-        `)
-        .addTo(map);
-
+        new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(`<h3>${props.nombre}</h3><p><b>Servicio:</b><br>${props.servicio}</p><p><b>Status:</b><br>${props.status}</p>`).addTo(map);
     });
+
     map.on("click", "pins-senador", (e) => {
+        const props = e.features[0].properties;
+        new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(`<h3>Actividad del Senador</h3><p><b>Fecha:</b><br>${new Date(props.fecha).toLocaleDateString("es-MX",{day: "numeric",month: "long",year: "numeric"})}</p><p><b>Actividad:</b><br>${props.actividad}</p><p><b>Ubicación:</b><br>${props.ubicacion}</p><p><b>Aforo:</b><br>${props.aforo}</p><p><b>Comentario:</b><br>${props.comentario}</p>`).addTo(map);
+    });
 
-  const props = e.features[0].properties;
-
-  new mapboxgl.Popup()
-    .setLngLat(e.lngLat)
-    .setHTML(`
-      <h3>Actividad del Senador</h3>
-
-      <p>
-        <b>Fecha:</b><br>
-        ${new Date(props.fecha).toLocaleDateString(
-    "es-MX",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }
-)}
-      </p>
-
-      <p>
-        <b>Actividad:</b><br>
-        ${props.actividad}
-      </p>
-
-      <p>
-        <b>Ubicación:</b><br>
-        ${props.ubicacion}
-      </p>
-
-      <p>
-        <b>Aforo:</b><br>
-        ${props.aforo}
-      </p>
-
-      <p>
-        <b>Comentario:</b><br>
-        ${props.comentario}
-      </p>
-    `)
-    .addTo(map);
-
-});
     map.on("click", "pins-equipo", (e) => {
+        const props = e.features[0].properties;
+        new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(`<h3>Actividad del Equipo</h3><p><b>Fecha:</b><br>${new Date(props.fecha).toLocaleDateString("es-MX",{day: "numeric",month: "long",year: "numeric"})}</p><p><b>Actividad:</b><br>${props.actividad}</p><p><b>Ubicación:</b><br>${props.ubicacion}</p><p><b>Aforo:</b><br>${props.aforo}</p><p><b>Comentario:</b><br>${props.comentario}</p>`).addTo(map);
+    });
 
-  const props = e.features[0].properties;
+    map.on("click", "click-secciones", (e) => {
+        const props = e.features[0].properties;
+        const seccion = Number(props.SECCION_2026);
+        const infoDistrito = catalogoDistritos.find(d => Number(d.seccion) === seccion);
+        let html = `<h3>Sección ${seccion}</h3>`;
+        if (infoDistrito) {
+            html += `<p><b>Municipio:</b> ${infoDistrito.municipio}<br><b>Distrito Federal:</b> ${infoDistrito.federal}<br><b>Distrito Local:</b> ${infoDistrito.local}</p><hr><p><b>Lista Nominal:</b> ${Number(infoDistrito.lista_nominal).toLocaleString()} personas<br><b>Ranking LN:</b> ${infoDistrito.ranking_lista_nominal}<br><b>Categoría:</b> ${infoDistrito.categoria_lista_nominal}</p>`;
+        }
+        new mapboxgl.Popup().setLngLat(e.lngLat).setHTML(html).addTo(map);
+    });
 
-  new mapboxgl.Popup()
-    .setLngLat(e.lngLat)
-    .setHTML(`
-      <h3>Actividad del Equipo</h3>
-
-      <p>
-        <b>Fecha:</b><br>
-        ${new Date(props.fecha).toLocaleDateString(
-    "es-MX",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }
-)}
-      </p>
-
-      <p>
-        <b>Actividad:</b><br>
-        ${props.actividad}
-      </p>
-
-      <p>
-        <b>Ubicación:</b><br>
-        ${props.ubicacion}
-      </p>
-
-      <p>
-        <b>Aforo:</b><br>
-        ${props.aforo}
-      </p>
-
-      <p>
-        <b>Comentario:</b><br>
-        ${props.comentario}
-      </p>
-    `)
-    .addTo(map);
-
-});
-
-map.on("click", "click-secciones", (e) => {
-
-    const props = e.features[0].properties;
-
-    const seccion = Number(props.SECCION_2026);
-
-    const infoDistrito = catalogoDistritos.find(
-        d => Number(d.seccion) === seccion
-    );
-    console.log(infoDistrito);
-    let html = `
-        <h3>Sección ${seccion}</h3>
-    `;
-
-    if (infoDistrito) {
-
-    html += `
-    <p>
-    <b>Municipio:</b> ${infoDistrito.municipio}<br>
-    <b>Distrito Federal:</b> ${infoDistrito.federal}<br>
-    <b>Distrito Local:</b> ${infoDistrito.local}
-    </p>
-
-    <hr>
-
-    <p>
-    <b>Lista Nominal:</b> ${Number(infoDistrito.lista_nominal).toLocaleString()} personas<br>
-
-    <b>Ranking LN:</b> ${infoDistrito.ranking_lista_nominal}<br>
-
-    <b>Categoría:</b> ${infoDistrito.categoria_lista_nominal}
-    </p>
-    `;
-}
-
-    new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(html)
-        .addTo(map);
-
-});
-
-actualizarLista();
-    });   
+    actualizarLista();
+});   
 </script>
-
 </body>
 </html>
