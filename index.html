@@ -29,9 +29,18 @@ html, body{
     box-shadow:0 2px 8px rgba(0,0,0,.2); font-family:Arial, sans-serif; font-size: 14px;
 }
 #panel-lista{
-    position:absolute; top:280px; left:15px; width:250px; max-height:400px;
-    overflow-y:auto; background:white; padding:10px; border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.2); z-index:999; font-family:Arial, sans-serif;
+    position:absolute; 
+    top:15px;        /* Lo pegamos a la parte de arriba */
+    right:15px;      /* Aquí está la magia: lo anclamos a la DERECHA */
+    width:250px; 
+    max-height:85vh; /* Hacemos que su altura máxima sea dinámica al tamaño de la pantalla */
+    overflow-y:auto; 
+    background:white; 
+    padding:10px; 
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.2); 
+    z-index:999; 
+    font-family:Arial, sans-serif;
 }
 </style>
 </head>
