@@ -30,10 +30,10 @@ html, body{
 }
 #panel-lista{
     position:absolute; 
-    top:15px;        /* Lo pegamos a la parte de arriba */
-    right:15px;      /* Aquí está la magia: lo anclamos a la DERECHA */
+    top:15px;
+    right:15px;
     width:250px; 
-    max-height:85vh; /* Hacemos que su altura máxima sea dinámica al tamaño de la pantalla */
+    max-height: calc(100vh - 240px); /* <-- Aquí está la magia responsiva */
     overflow-y:auto; 
     background:white; 
     padding:10px; 
